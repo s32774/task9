@@ -22,4 +22,12 @@ still manually enter the URL in the browser.
 because it helps attackers discover which accounts exist in the system.
 
 
+To run the application, open the project in Rider and press Run or use dotnet run.
+To create a user, open '/Account/Register', enter an email and a password with at least 8 characters,
+and click Register. An admin account is created automatically when the application starts. 
+Admin login: Email: admin@ukr.net, Password: Admin123!. 
+Password hashing is implemented in AccountController using 'PasswordHasher<AppUser>'.
+Authentication is configured in Program.cs using cookies.
+DashboardController is protected with Authorize and AdminController is protected with '[Authorize(Roles = "Admin")]'
+
 Olena Ch. s32774
