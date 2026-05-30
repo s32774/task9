@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Task9.Data;
-
+using Microsoft.AspNetCore.Identity;
+using Task9.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
@@ -30,5 +31,25 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var passwordHasher = new PasswordHasher<AppUser>();
 
+    context.Database.EnsureCreated();
+
+    if (!context.AppUsers.Any(u => u.Email == "admin@test.com"))
+    {
+        var admin = new AppUser
+        {
+            Email = "admin@ukr.net",
+            Role = "Admin"
+        };
+
+        admin.PasswordHash = passwordHasher.HashPassword(admin, "Admin123!");
+
+        context.AppUsers.Add(admin);
+        context.SaveChanges();
+    }
+}
 app.Run();
